@@ -1,0 +1,43 @@
+services:
+  api:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./api:/app
+      - api_node_modules:/app/node_modules
+    ports:
+      - "9229:9229" # node --inspect, opcional para debugger anexado
+    command: ["pnpm", "run", "start:dev"]
+    healthcheck:
+      disable: true # em dev o start:dev demora a "esquentar"; não bloqueie o depends_on do frontend
+
+  frontend:
+    build:
+      target: development
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      # Descomente se o hot-reload não disparar (comum em bind mounts no macOS/Docker Desktop):
+      # WATCHPACK_POLLING: "true"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+      - frontend_next_cache:/app/.next
+    command: ["pnpm", "dev", "--hostname", "0.0.0.0"]
+
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+volumes:
+  api_node_modules:
+  frontend_node_modules:
+  frontend_next_cache:
