@@ -1,0 +1,31 @@
+# dependências
+**/node_modules
+
+# lockfile da raiz: regenerado a cada `pnpm` rodado ali (só fixa a versão do
+# pnpm em si, não há dependências reais no package.json da raiz). Os
+# lockfiles de api/ e frontend/ (esses sim usados pelos Dockerfiles) continuam
+# versionados normalmente.
+/pnpm-lock.yaml
+
+# builds
+api/dist
+**/*.tsbuildinfo
+frontend/.next
+frontend/out
+
+# variáveis de ambiente
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# logs
+**/*.log
+**/npm-debug.log*
+**/pnpm-debug.log*
+
+# SO / editor
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
